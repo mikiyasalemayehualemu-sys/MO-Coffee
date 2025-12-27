@@ -46,15 +46,15 @@ const Navbar = () => {
             )}
         >
             <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
-                <a href="#home" className="flex items-center gap-4 group" aria-label="MO Coffee & Roastery Home">
-                    <div className="w-12 h-12 bg-coffee-800 dark:bg-accent rounded-2xl flex items-center justify-center text-cream-light font-bold text-2xl shadow-lg group-hover:bg-accent dark:group-hover:bg-coffee-700 transition-colors duration-500 transform group-hover:-rotate-3" aria-hidden="true">
+                <a href="#home" className="flex items-center gap-2 md:gap-4 group" aria-label="MO Coffee & Roastery Home">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-coffee-800 dark:bg-accent rounded-xl md:rounded-2xl flex items-center justify-center text-cream-light font-bold text-xl md:text-2xl shadow-lg group-hover:bg-accent dark:group-hover:bg-coffee-700 transition-colors duration-500 transform group-hover:-rotate-3" aria-hidden="true">
                         MO
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-serif font-bold text-2xl tracking-tight text-coffee-900 dark:text-cream-light leading-none">
+                        <span className="font-serif font-bold text-xl md:text-2xl tracking-tight text-coffee-900 dark:text-cream-light leading-none">
                             MO Coffee
                         </span>
-                        <span className="text-coffee-500 dark:text-accent-DEFAULT text-xs font-bold tracking-[0.2em] uppercase mt-1 opacity-70">
+                        <span className="text-coffee-500 dark:text-accent-DEFAULT text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mt-0.5 md:mt-1 opacity-70">
                             & Roastery
                         </span>
                     </div>
@@ -156,31 +156,35 @@ const Navbar = () => {
                 )}
             >
                 <div className="p-8 space-y-8">
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-3">
                         {navLinks.map((link) => (
                             <a
                                 key={link.name}
                                 href={link.href}
-                                className="text-3xl font-serif font-bold text-coffee-800 dark:text-cream-light hover:text-accent transition-colors"
+                                className="text-lg font-serif font-bold text-coffee-800 dark:text-cream-light hover:text-accent transition-colors"
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 {link.name}
                             </a>
                         ))}
                     </div>
-                    <div className="pt-8 border-t border-coffee-100 dark:border-coffee-800">
-                        <div className="flex items-center gap-3 mb-6">
-                            <Languages className="w-5 h-5 text-accent" />
-                            <span className="text-sm font-bold tracking-widest uppercase text-coffee-500 dark:text-accent-DEFAULT uppercase">Select Language</span>
+                    <div className="pt-6 border-t border-coffee-100 dark:border-coffee-800">
+                        <div className="flex items-center gap-2 mb-4">
+                            <Languages className="w-4 h-4 text-accent" />
+                            <span className="text-[10px] font-bold tracking-widest uppercase text-coffee-500 dark:text-accent-DEFAULT">Select Language</span>
                         </div>
-                        <div className="flex flex-wrap gap-4">
+                        <div className="flex flex-wrap gap-2 md:gap-4">
                             {LANGUAGES.map((lang) => (
                                 <button
                                     key={lang.code}
+                                    onClick={() => {
+                                        setLanguage(lang.code as 'EN' | 'AM' | 'OM' | 'TI');
+                                        setIsMenuOpen(false);
+                                    }}
                                     className={cn(
-                                        "px-5 py-2.5 rounded-2xl text-sm font-bold border transition-all duration-300",
-                                        lang.code === 'EN'
-                                            ? "bg-coffee-900 dark:bg-accent text-cream-light border-coffee-900 dark:border-accent shadow-lg shadow-coffee-900/20"
+                                        "px-4 py-2 rounded-xl text-xs font-bold border transition-all duration-300",
+                                        language === lang.code
+                                            ? "bg-coffee-900 dark:bg-accent text-cream-light border-coffee-900 dark:border-accent shadow-lg shadow-coffee-900/10"
                                             : "bg-white dark:bg-coffee-800 text-coffee-700 dark:text-cream-dark border-coffee-200 dark:border-coffee-700 hover:border-accent"
                                     )}
                                 >

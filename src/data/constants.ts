@@ -1,3 +1,6 @@
+import cheesecakeImg from '../assets/cheesecake.jpg';
+import juiceImg from '../assets/juice.jpg';
+
 export const LANGUAGES = [
     { code: 'EN', name: 'English' },
     { code: 'AM', name: 'አማርኛ' },
@@ -47,6 +50,6 @@ export const CONTACT_INFO = {
 export const GALLERY_IMAGES = [
     { url: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=2078&auto=format&fit=crop', title: 'The Roast' },
     { url: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop', title: 'Morning Light' },
-    { url: '/src/assets/cheesecake.jpg', title: 'Artisan Desserts' },
-    { url: '/src/assets/juice.jpg', title: 'Fresh Beverages' },
+    { url: cheesecakeImg, title: 'Artisan Desserts' },
+    { url: juiceImg, title: 'Fresh Beverages' },
 ];

@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion';
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 const MainRoastVisual = () => {
     const { scrollYProgress } = useScroll();
@@ -11,29 +11,73 @@ const MainRoastVisual = () => {
         restDelta: 0.001
     });
 
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     // Vertical position tracking - minimal drift
     const y = useTransform(smoothProgress, [0, 1], ["0vh", "1vh"]);
 
-    // RECALIBRATED MAGNETIC MILESTONES (Accounting for section heights):
-    // 0.00 (Hero):     Right (+42vw)
-    // 0.22 (Features): Left (-42vw)
-    // 0.42 (Menu):     Right (+42vw) 
-    // 0.72 (Gallery):  Center (0vw)   
-    // 1.00 (Contact):  Left (-42vw)  
-    // SMOOTH ORGANIC FLOW: Replacing Magnetic Swings with a central winding path
-    // Range: [-15vw, 15vw] to stay clear of content and fully visible on all devices
-    const x = useTransform(
+    // MOBILE PATH (Ladder): Lock to right corner, then zig-zag down the right side
+    const mobileX = useTransform(
+        smoothProgress,
+        [0, 0.25, 0.5, 0.75, 1],
+        ["30vw", "35vw", "28vw", "32vw", "30vw"]
+    );
+
+    // DESKTOP PATH (S-Curve): Winding journey
+    const desktopX = useTransform(
         smoothProgress,
         [0, 0.22, 0.42, 0.72, 1],
         ["12vw", "-12vw", "12vw", "-5vw", "-15vw"]
     );
 
-    // Scaling logic: Pulse at section centers - SUBSTANTIALLY REDUCED
-    const scale = useTransform(
+    // SVG Path Morphing for Liquid (Compact Falling Drop)
+    const splashPath = "M51.5,14.5 C55.5,5.5 64.5,10.5 68.5,18.5 C72.5,26.5 78.5,35.5 82.5,45.5 C86.5,55.5 91.5,68.5 88.5,82.5 C85.5,96.5 74.5,108.5 61.5,115.5 C48.5,122.5 32.5,123.5 19.5,114.5 C6.5,105.5 1.5,88.5 4.5,72.5 C7.5,56.5 16.5,42.5 26.5,31.5 C36.5,20.5 47.5,23.5 51.5,14.5 Z";
+    const longDropPath = "M50,10 C52,10 53,30 53,65 C53,100 52,125 50,130 C48,125 47,100 47,65 C47,30 48,10 50,10 Z";
+    // Shortened, more compact drop for impact
+    const compactDropPath = "M50,40 C53,40 55,50 55,65 C55,80 53,90 50,90 C47,90 45,80 45,65 C45,50 47,40 50,40 Z";
+
+    const liquidPath = useTransform(
         smoothProgress,
-        [0, 0.25, 0.5, 0.75, 1],
-        [0.5, 0.8, 0.6, 0.85, 0.4]
+        [0.85, 0.89, 0.92, 0.95],
+        [splashPath, splashPath, longDropPath, compactDropPath]
     );
+
+    const x = isMobile ? mobileX : desktopX;
+
+    // Vertical "Fall" motion (Shortened to 5vh for containment)
+    const yOffset = useTransform(
+        smoothProgress,
+        [0.85, 0.89, 0.95],
+        ["0vh", "0vh", "5vh"]
+    );
+
+
+    // STAGED TRANSITION: Bean -> Splash/Drop -> Cup
+    const beanOpacity = useTransform(smoothProgress, [0, 0.85, 0.89], [1, 1, 0]);
+    const splashOpacity = useTransform(smoothProgress, [0.85, 0.89, 0.95, 0.96], [0, 1, 1, 0]);
+    const cupOpacity = useTransform(smoothProgress, [0.93, 0.97, 1], [0, 1, 1]);
+
+    // Scaling logic: Extreme condensation for the "small drop"
+    const mobileScale = useTransform(
+        smoothProgress,
+        [0, 0.5, 0.85, 0.89, 0.94, 1],
+        [0.4, 0.5, 0.45, 0.25, 0.45, 0.35]
+    );
+
+    const desktopScale = useTransform(
+        smoothProgress,
+        [0, 0.25, 0.5, 0.75, 0.85, 0.89, 0.94, 1],
+        [0.5, 0.8, 0.6, 0.85, 0.65, 0.35, 0.65, 0.4]
+    );
+
+    const scale = isMobile ? mobileScale : desktopScale;
 
     const rotate = useTransform(smoothProgress, [0, 1], [0, 720]);
 
@@ -44,18 +88,26 @@ const MainRoastVisual = () => {
         ["#91A062", "#BC6C25", "#3D1E16", "#140A08"]
     );
 
-    const beanOpacity = useTransform(smoothProgress, [0, 0.88, 0.95], [1, 1, 0]);
-    const liquidOpacity = useTransform(smoothProgress, [0.88, 0.95, 1], [0, 1, 1]);
+    const liquidSurfaceY = useTransform(smoothProgress, [0.93, 0.98, 1], [15, 0, 0]);
+    const liquidSurfaceOpacity = useTransform(smoothProgress, [0.93, 0.95], [0, 1]);
+
+    // Dynamic Blur for the "Crash" impact
+    const morphBlur = useTransform(
+        smoothProgress,
+        [0, 0.85, 0.89, 0.93, 1],
+        ["blur(0px)", "blur(0px)", "blur(15px)", "blur(0px)", "blur(0px)"]
+    );
 
     if (shouldReduceMotion) return null;
 
     return (
         <div className="fixed inset-0 pointer-events-none z-[60] flex items-center justify-center">
             <motion.div
-                style={{ y, x, scale, rotate }}
+                style={{ y, x, scale, rotate, filter: morphBlur }}
                 className="relative w-32 h-48 md:w-[250px] md:h-[350px] flex items-center justify-center transition-all duration-300"
             >
-                <motion.div style={{ opacity: beanOpacity }} className="w-full h-full relative">
+                {/* STAGE 1: THE BEAN */}
+                <motion.div style={{ opacity: beanOpacity }} className="absolute inset-0 w-full h-full flex items-center justify-center">
                     <svg viewBox="0 0 100 130" className="w-full h-full filter drop-shadow-[0_45px_100px_rgba(0,0,0,0.4)]">
                         <defs>
                             <filter id="beanAnatomy" x="-20%" y="-20%" width="140%" height="140%">
@@ -76,14 +128,43 @@ const MainRoastVisual = () => {
                         <motion.path d="M48 10C48 10 40 40 55 65C70 90 48 120 48 120" stroke="rgba(0,0,0,0.5)" strokeWidth="2.5" strokeLinecap="round" fill="none" filter="url(#beanAnatomy)" />
                     </svg>
                     <motion.div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center opacity-10 select-none" style={{ opacity: useTransform(smoothProgress, [0.4, 0.5, 0.6], [0, 0.2, 0]) }}>
-                        <div className="text-white font-serif text-7xl font-bold tracking-tighter">MO</div>
+                        <div className="text-white font-serif text-4xl md:text-7xl font-bold tracking-tighter">MO</div>
                     </motion.div>
                 </motion.div>
 
+                {/* STAGE 2: THE LIQUID CRASH (Splash Morphing into Falling Drop) */}
                 <motion.div
                     style={{
-                        opacity: liquidOpacity,
-                        x: useTransform(smoothProgress, [0.88, 1], ["0vw", "-25vw"])
+                        opacity: splashOpacity,
+                        color: beanColor,
+                        y: yOffset
+                    }}
+                    className="absolute inset-0 w-full h-full flex items-center justify-center"
+                >
+                    <svg viewBox="0 0 100 130" className="w-[120%] h-[120%] text-coffee-900 filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+                        <motion.path
+                            fill="currentColor"
+                            style={{ d: liquidPath }}
+                        />
+                        {/* Smaller droplets that fade out during the fall */}
+                        <motion.circle
+                            cx="85" cy="30" r="3" fill="currentColor"
+                            style={{ opacity: useTransform(smoothProgress, [0.85, 0.9], [1, 0]) }}
+                        />
+                        <motion.circle
+                            cx="15" cy="40" r="4" fill="currentColor"
+                            style={{ opacity: useTransform(smoothProgress, [0.85, 0.9], [1, 0]) }}
+                        />
+                    </svg>
+                </motion.div>
+
+                {/* STAGE 3: THE FINISHED CUP */}
+                <motion.div
+                    style={{
+                        opacity: cupOpacity,
+                        x: isMobile
+                            ? useTransform(smoothProgress, [0.97, 1], ["0vw", "30vw"])
+                            : useTransform(smoothProgress, [0.97, 1], ["0vw", "-25vw"])
                     }}
                     className="absolute inset-0 flex flex-col items-center justify-center"
                 >
@@ -190,9 +271,7 @@ const MainRoastVisual = () => {
                             rx="75"
                             ry="11"
                             fill="url(#coffeeGradient)"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 1, delay: 0.5 }}
+                            style={{ y: liquidSurfaceY, opacity: liquidSurfaceOpacity }}
                         />
 
                         {/* Coffee Surface Highlight */}

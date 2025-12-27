@@ -27,15 +27,15 @@ const Gallery = () => {
                 </div>
 
                 {/* THE STAGGERED PATH: Zig-Zag layout frames the Winding Path */}
-                <div className="flex flex-col gap-48 items-center">
+                <div className="flex flex-col gap-24 md:gap-48 items-center">
                     <div className="w-full flex justify-start">
                         <motion.div
                             initial={{ opacity: 0, x: -100 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true, margin: "-100px" }}
-                            className="w-full md:w-[35%] relative group"
+                            className="w-[85%] md:w-[35%] relative group"
                         >
-                            <div className="relative overflow-hidden rounded-[3rem] aspect-[4/5] shadow-2xl">
+                            <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] aspect-[4/5] shadow-2xl">
                                 <img
                                     src={GALLERY_IMAGES[0].url}
                                     alt={GALLERY_IMAGES[0].title}
@@ -51,9 +51,9 @@ const Gallery = () => {
                             initial={{ opacity: 0, x: 100 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true, margin: "-100px" }}
-                            className="w-full md:w-[35%] relative group"
+                            className="w-[85%] md:w-[35%] relative group"
                         >
-                            <div className="relative overflow-hidden rounded-[3rem] aspect-[4/5] shadow-2xl">
+                            <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] aspect-[4/5] shadow-2xl">
                                 <img
                                     src={GALLERY_IMAGES[1].url}
                                     alt={GALLERY_IMAGES[1].title}
@@ -69,9 +69,9 @@ const Gallery = () => {
                             initial={{ opacity: 0, x: -100 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true, margin: "-100px" }}
-                            className="w-full md:w-[35%] relative group"
+                            className="w-[85%] md:w-[35%] relative group"
                         >
-                            <div className="relative overflow-hidden rounded-[3rem] aspect-[4/5] shadow-2xl">
+                            <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] aspect-[4/5] shadow-2xl">
                                 <img
                                     src={GALLERY_IMAGES[2].url}
                                     alt={GALLERY_IMAGES[2].title}
@@ -87,9 +87,9 @@ const Gallery = () => {
                             initial={{ opacity: 0, x: 100 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true, margin: "-100px" }}
-                            className="w-full md:w-[35%] relative group"
+                            className="w-[85%] md:w-[35%] relative group"
                         >
-                            <div className="relative overflow-hidden rounded-[3rem] aspect-[4/5] shadow-2xl">
+                            <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] aspect-[4/5] shadow-2xl">
                                 <img
                                     src={GALLERY_IMAGES[3].url}
                                     alt={GALLERY_IMAGES[3].title}
